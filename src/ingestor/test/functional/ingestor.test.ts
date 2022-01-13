@@ -1,7 +1,10 @@
 import { expect } from "chai"
+import request from "supertest"
+import ingestorServer from "../../app/ingestorServer"
 
-describe("My first dummy test", () => {
-  it("should pass the first test", () => {
-    expect(true).to.be.true
+describe("Data ingestor API", () => {
+  it("should return 201 created", async () => {
+    const res = await request(ingestorServer).post("/track")
+    expect(res.statusCode).to.equal(201)
   })
 })
