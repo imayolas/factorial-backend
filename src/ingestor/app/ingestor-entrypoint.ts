@@ -1,1 +1,1 @@
-console.log("Ingestor enrtypoint!")
+console.log("Ingestor entrypoint!")

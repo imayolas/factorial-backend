@@ -17,11 +17,11 @@
     "typescript": "^4.5.4"
   },
   "scripts": {
-    "start:tsc": "tsc --watch",
-    "start:ingestor": "nodemon ./dist/ingestor/app/ingestor-entrypoint.js",
-    "start:api": "nodemon ./dist/api/app/api-entrypoint.js",
-    "start:test": "mocha --require source-map-support/register --watch dist/**/*.test.js",
-    "start": "concurrently npm:start:tsc npm:start:ingestor npm:start:api",
+    "dev:tsc": "tsc --watch",
+    "dev:ingestor": "nodemon ./dist/ingestor/app/ingestor-entrypoint.js",
+    "dev:api": "nodemon ./dist/api/app/api-entrypoint.js",
+    "dev": "concurrently yarn:dev:tsc yarn:dev:ingestor yarn:dev:api",
+    "test:watch": "mocha --require source-map-support/register --watch dist/**/*.test.js",
     "test": "mocha --require source-map-support/register dist/**/*.test.js",
     "prettier": "prettier --config .prettierrc '**/*.{js,ts,json}' --write"
   }
