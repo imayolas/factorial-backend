@@ -6,9 +6,7 @@ color: true
 delay: false
 diff: true
 recursive: true
-# exit: true
-
-
+exit: true
 # This is example Mocha config containing every Mocha option plus others
 # Source: https://raw.githubusercontent.com/mochajs/mocha/master/example/config/.mocharc.yml
 

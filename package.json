@@ -26,8 +26,8 @@
     "dev:ingestor": "nodemon ./dist/ingestor/app/ingestor-entrypoint.js",
     "dev:api": "nodemon ./dist/api/app/api-entrypoint.js",
     "dev": "concurrently yarn:dev:tsc yarn:dev:ingestor yarn:dev:api",
-    "test:watch": "mocha --require source-map-support/register --watch dist/**/*.test.js",
-    "test": "mocha --require source-map-support/register dist/**/*.test.js",
+    "test": "mocha -r source-map-support/register -r ts-node/register -r tsconfig-paths/register dist/**/*.test.js",
+    "test:watch": "nodemon --watch dist --exec \"yarn test\"",
     "prettier": "prettier --config .prettierrc '**/*.{js,ts,json}' --write",
     "prepare": "husky install"
   },
