@@ -1,6 +1,6 @@
 import express from "express"
 import bodyParser from "body-parser"
-import IngestorManager from "./IngestorManager"
+import IngestorManager from "./lib/IngestorManager"
 // Instantiate express
 const app = express()
 
