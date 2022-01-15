@@ -33,16 +33,35 @@ describe("Data ingestor API, POST /track", () => {
       expect(res.statusCode).to.equal(400)
       expect(res.body.errorMessage).to.equal("name should be a string")
 
-      payload.name = { key: "a nested object" }
+      payload.name = { key: "a nested value" }
+
       const res2 = await request(ingestorServer).post("/track").send(payload)
       expect(res2.statusCode).to.equal(400)
-      expect(res.body.errorMessage).to.equal("name should be a string")
+      expect(res2.body.errorMessage).to.equal("name should be a string")
     })
 
-    xit("should fail with a 400 error when param name is not a string")
+    it("should fail if param value is undefined", async () => {
+      const payload = {
+        name: "test",
+      }
+      const res = await request(ingestorServer).post("/track").send(payload)
+      expect(res.statusCode).to.equal(400)
+      expect(res.body.errorMessage).to.equal("value is required")
+    })
 
-    xit("should fail with a 400 error when param value is undefined")
+    it("should fail with a 400 error when param value is not a string", async () => {
+      const payload: { name: string; value: any } = {
+        name: "test",
+        value: { key: "a nested object" },
+      }
+      const res = await request(ingestorServer).post("/track").send(payload)
+      expect(res.statusCode).to.equal(400)
+      expect(res.body.errorMessage).to.equal("value should be a string, number or boolean")
 
-    xit("should fail with a 400 error when param value is not a string,number or boolean")
+      payload.value = { key: [1, 2, 3] }
+      const res2 = await request(ingestorServer).post("/track").send(payload)
+      expect(res2.statusCode).to.equal(400)
+      expect(res2.body.errorMessage).to.equal("value should be a string, number or boolean")
+    })
   })
 })
