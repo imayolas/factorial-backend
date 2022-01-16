@@ -1,19 +1,17 @@
 import { expect } from "chai"
 import request from "supertest"
 import ingestorServer from "@modules/ingestor/ingestorServer"
-import IngestorManager from "@modules/ingestor/lib/IngestorManager"
+import DbDAO from "shared/DbDAO"
 
-const clickhousefile = require("../../../../clickhousefile.js")
-const ingestorManager = new IngestorManager(clickhousefile)
+const dbName = process.env.CLICKHOUSE_DBNAME
+const dbDAO = new DbDAO({ queryOptions: { database: dbName } })
 
 const postTrackEvent = async (payload: any) => {
   return await request(ingestorServer).post("/track").set("Accept", "application/json").send(payload)
 }
 
 const runClickhouseQuery = async (query: string) => {
-  const clickhouse = ingestorManager.clickhouseClient
-  const res = await clickhouse.querying(query)
-  return res
+  return await dbDAO.raw(query)
 }
 
 describe("Data ingestor API, POST /track", () => {
@@ -39,6 +37,7 @@ describe("Data ingestor API, POST /track", () => {
     })
 
     it("should insert the event in the database", async function () {
+      await postTrackEvent(this.context.payload)
       await postTrackEvent(this.context.payload)
 
       const dbResponse = await runClickhouseQuery(`SELECT count(1) as count from events FORMAT JSON`)
