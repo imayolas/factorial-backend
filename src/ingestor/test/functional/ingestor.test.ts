@@ -33,6 +33,11 @@ describe("Data ingestor API, POST /track", () => {
       expect(res.statusCode).to.equal(201)
     })
 
+    it("should return a success message", async function () {
+      const res = await postTrackEvent(this.context.payload)
+      expect(res.body).to.deep.equal({ success: true })
+    })
+
     it("should insert the event in the database", async function () {
       await postTrackEvent(this.context.payload)
 

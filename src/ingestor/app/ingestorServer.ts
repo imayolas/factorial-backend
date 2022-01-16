@@ -24,8 +24,8 @@ app.post("/track", async function (req, res) {
   if (!validPayload.success) {
     return res.status(400).json({ errorMessage: validPayload.errorMessage })
   }
-  const dbResponse = await ingestorManager.insertEvents(req.body)
-  return res.status(201).json(dbResponse)
+  await ingestorManager.insertEvents(req.body)
+  return res.status(201).json({ success: true })
 })
 
 // Export to be used to enable port listening + for testing purposes
