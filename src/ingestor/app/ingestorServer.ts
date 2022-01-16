@@ -1,10 +1,14 @@
 import express from "express"
 import bodyParser from "body-parser"
 import IngestorManager from "./lib/IngestorManager"
-// Instantiate express
+
+// To do: Convert to ENV variables
+const clickhousefile = require("../../../clickhousefile.js")
+
+const ingestorManager = new IngestorManager(clickhousefile)
+
 const app = express()
 
-// Inject middleware
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
@@ -20,8 +24,8 @@ app.post("/track", async function (req, res) {
   if (!validPayload.success) {
     return res.status(400).json({ errorMessage: validPayload.errorMessage })
   }
-
-  return res.status(201).json({ success: "true" })
+  const dbResponse = await ingestorManager.insertEvents(req.body)
+  return res.status(201).json(dbResponse)
 })
 
 // Export to be used to enable port listening + for testing purposes

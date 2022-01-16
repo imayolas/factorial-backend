@@ -1,20 +1,31 @@
 import { expect } from "chai"
 import request from "supertest"
 import ingestorServer from "@modules/ingestor/ingestorServer"
+import IngestorManager from "@modules/ingestor/lib/IngestorManager"
+
+const clickhousefile = require("../../../../clickhousefile.js")
+const ingestorManager = new IngestorManager(clickhousefile)
 
 const postTrackEvent = async (payload: any) => {
   return await request(ingestorServer).post("/track").set("Accept", "application/json").send(payload)
 }
 
+const runClickhouseQuery = async (query: string) => {
+  const clickhouse = ingestorManager.clickhouseClient
+  const res = await clickhouse.querying(query)
+  return res
+}
+
 describe("Data ingestor API, POST /track", () => {
   describe("when payload is valid", () => {
-    beforeEach(function () {
+    beforeEach(async function () {
       this.context = {
         payload: {
           name: "purchaseAmount",
           value: 100,
         },
       }
+      await runClickhouseQuery("TRUNCATE TABLE IF EXISTS events")
     })
 
     it("should return 201 created", async function () {
@@ -22,9 +33,13 @@ describe("Data ingestor API, POST /track", () => {
       expect(res.statusCode).to.equal(201)
     })
 
-    it("should insert a record in the database", async function () {
-      const res = await postTrackEvent(this.context.payload)
-      expect(res.statusCode).to.equal(201)
+    it("should insert the event in the database", async function () {
+      await postTrackEvent(this.context.payload)
+      const dbResponse = await runClickhouseQuery(`SELECT count(1) as count from events FORMAT JSON`)
+      expect(Number(dbResponse.data[0].count)).to.equal(2)
+      const dbResponse2 = await runClickhouseQuery(`SELECT * from events FORMAT JSON`)
+      expect(dbResponse2.data[0].name).to.equal("purchaseAmount")
+      expect(Number(dbResponse2.data[0].value)).to.equal(100)
     })
   })
 
