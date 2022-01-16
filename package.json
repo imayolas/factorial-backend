@@ -8,10 +8,10 @@
     "@imayolas/clickhouse-migrate": "https://github.com/imayolas/clickhouse-migrate#1.1.1",
     "@types/chai": "^4.3.0",
     "@types/express": "^4.17.13",
+    "@types/knex": "^0.16.1",
     "@types/mocha": "^9.0.0",
     "@types/node": "^17.0.8",
     "@types/supertest": "^2.0.11",
-    "@types/knex": "^0.16.1",
     "chai": "^4.3.4",
     "concurrently": "^7.0.0",
     "husky": "^7.0.0",
@@ -27,17 +27,18 @@
   },
   "scripts": {
     "dev:tsc": "tsc --watch",
-    "dev:ingestor": "nodemon ./dist/ingestor/app/ingestor-entrypoint.js",
-    "dev:api": "nodemon ./dist/api/app/api-entrypoint.js",
+    "dev:ingestor": "NODE_ENV=development DOTENV_CONFIG_PATH=.env.development nodemon -r dotenv/config ./dist/ingestor/app/ingestor-entrypoint.js",
+    "dev:api": "NODE_ENV=development DOTENV_CONFIG_PATH=.env.development nodemon -r dotenv/config ./dist/api/app/api-entrypoint.js",
     "dev": "concurrently yarn:dev:tsc yarn:dev:ingestor yarn:dev:api",
-    "test": "mocha -r ts-node/register -r tsconfig-paths/register dist/**/*.test.js",
+    "test": "NODE_ENV=test DOTENV_CONFIG_PATH=.env.test mocha -r dotenv/config -r ts-node/register -r tsconfig-paths/register dist/**/*.test.js",
     "test:watch": "nodemon --watch dist --exec \"yarn test\"",
     "prettier": "prettier --config .prettierrc '**/*.{js,ts,json}' --write",
     "prepare": "husky install",
-    "prepareClickhouse": "docker exec -it clickhouse clickhouse-client --query 'CREATE TABLE IF NOT EXISTS migrations (id Int32, data String, created_at DateTime) ENGINE = TinyLog()'"
+    "prepareClickhouse": "bash ./scripts/prepareClickhouse.sh"
   },
   "dependencies": {
     "body-parser": "^1.19.1",
+    "dotenv": "^12.0.4",
     "express": "^4.17.2",
     "knex": "^1.0.1"
   }

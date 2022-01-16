@@ -1,3 +1,5 @@
+const dbName = process.env.CLICKHOUSE_DBNAME || "default"
+
 module.exports = {
   host: "localhost",
   port: 8123,
@@ -5,7 +7,7 @@ module.exports = {
   pathname: "/",
   timeout: 30000,
   queryOptions: {
-    database: "default",
+    database: dbName,
   },
   migrations: {
     directory: "./migrations/clickhouse",

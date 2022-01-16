@@ -35,8 +35,10 @@ describe("Data ingestor API, POST /track", () => {
 
     it("should insert the event in the database", async function () {
       await postTrackEvent(this.context.payload)
+
       const dbResponse = await runClickhouseQuery(`SELECT count(1) as count from events FORMAT JSON`)
       expect(Number(dbResponse.data[0].count)).to.equal(2)
+
       const dbResponse2 = await runClickhouseQuery(`SELECT * from events FORMAT JSON`)
       expect(dbResponse2.data[0].name).to.equal("purchaseAmount")
       expect(Number(dbResponse2.data[0].value)).to.equal(100)
