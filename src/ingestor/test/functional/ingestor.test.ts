@@ -1,6 +1,6 @@
 import { expect } from "chai"
 import request from "supertest"
-import ingestorServer from "@modules/ingestor/ingestorServer"
+import ingestorServer from "@ingestor/ingestorServer"
 import DbDAO from "shared/DbDAO"
 
 const dbName = process.env.CLICKHOUSE_DBNAME

@@ -26,7 +26,7 @@
     "typescript": "^4.5.4"
   },
   "scripts": {
-    "dev:tsc": "tsc --watch",
+    "dev:tsc": "rm -rf dist && tsc --watch",
     "dev:ingestor": "NODE_ENV=development DOTENV_CONFIG_PATH=.env.development nodemon -r dotenv/config ./dist/ingestor/app/ingestor-entrypoint.js",
     "dev:api": "NODE_ENV=development DOTENV_CONFIG_PATH=.env.development nodemon -r dotenv/config ./dist/api/app/api-entrypoint.js",
     "dev": "concurrently yarn:dev:tsc yarn:dev:ingestor yarn:dev:api",
