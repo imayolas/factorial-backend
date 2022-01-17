@@ -1,4 +1,5 @@
 import Knex from "knex"
+import { isDateString } from "./dateUtils"
 
 const Clickhouse = require("@apla/clickhouse")
 const Dialect = require("knex/lib/dialects/postgres/index.js")
@@ -7,9 +8,21 @@ const knex = Knex({
   client: Dialect,
 })
 
+enum GroupByTimeOptions {
+  MINUTE = "minute",
+  HOUR = "hour",
+  DAY = "day",
+}
+
 export interface NameValuePayload {
   name: string
   value: number
+}
+
+export interface GetMetricsParams {
+  groupBy: string
+  dateFrom?: string
+  dateTo?: string
 }
 
 export interface ClickhouseClientParams {
@@ -73,8 +86,35 @@ export default class DbDAO {
       throw new ValidationError("name should be a string")
     }
 
-    if (!["string", "number", "boolean"].includes(typeof value)) {
-      throw new ValidationError("value should be a string, number or boolean")
+    if (!["number"].includes(typeof value)) {
+      throw new ValidationError("value should be a number")
+    }
+
+    return true
+  }
+
+  private static validateGetMetricsParams(payload: Partial<GetMetricsParams>): boolean | ValidationError {
+    const { groupBy, dateFrom, dateTo } = payload
+
+    if (!groupBy) {
+      throw new ValidationError("groupBy parameter is required")
+    }
+
+    if (typeof groupBy !== "string") {
+      throw new ValidationError("groupBy should be a string")
+    }
+    const groupByTimeOptions: string[] = Object.values(GroupByTimeOptions)
+
+    if (!groupByTimeOptions.includes(groupBy)) {
+      throw new ValidationError(`groupBy should equal to one of '${groupByTimeOptions.join(", ")}'`)
+    }
+
+    if (dateFrom && !isDateString(dateFrom)) {
+      throw new ValidationError("dateFrom should be a valid date string")
+    }
+
+    if (dateTo && !isDateString(dateTo)) {
+      throw new ValidationError("dateTo should be a valid date string")
     }
 
     return true
@@ -93,13 +133,12 @@ export default class DbDAO {
     DbDAO.validateInsertEventsPayload(payload)
 
     // Use knex query builder to avoid any potential SQL injections
-
     const query = knex("events").insert(payload).toString()
-
     await this.clickhouse.querying(query)
   }
 
-  async getMetrics(): Promise<ClickhouseQueryResponse<NameValuePayload>> {
+  async getMetrics(params: Partial<GetMetricsParams>): Promise<ClickhouseQueryResponse<NameValuePayload>> {
+    DbDAO.validateGetMetricsParams(params)
     const query = `
       SELECT
         name,

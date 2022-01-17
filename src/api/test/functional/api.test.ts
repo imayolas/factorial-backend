@@ -17,8 +17,8 @@ const setClickhouseFixture = async () => {
   `)
 }
 
-const getMetrics = async () => {
-  return await request(apiServer).get("/metrics").set("Accept", "application/json")
+const getMetrics = async (query: { [key: string]: any }) => {
+  return await request(apiServer).get("/metrics").query(query).set("Accept", "application/json")
 }
 
 const runClickhouseQuery = async (query: string) => {
@@ -28,17 +28,40 @@ const runClickhouseQuery = async (query: string) => {
 }
 
 describe.only("REST API, GET /data", () => {
-  before(async () => {
+  beforeEach(async function () {
     await setClickhouseFixture()
   })
 
-  it("should return tracking metrics", async () => {
-    const res = await getMetrics()
+  describe("when query params are valid", () => {
+    beforeEach(async function () {
+      this.context = {
+        query: {
+          groupBy: "minute",
+        },
+      }
+    })
 
-    const purchaseAmount: NameValuePayload = res.body.data.find((d: NameValuePayload) => d.name === "purchaseAmount")
-    const orderQuantity: NameValuePayload = res.body.data.find((d: NameValuePayload) => d.name === "orderQuantity")
+    it("should return 201 created", async function () {
+      const res = await getMetrics(this.context.query)
+      expect(res.statusCode).to.equal(200)
+    })
 
-    expect(Number(purchaseAmount.value)).to.equal(150)
-    expect(Number(orderQuantity.value)).to.equal(5)
+    it("should return tracking metrics", async function () {
+      const res = await getMetrics(this.context.query)
+
+      const purchaseAmount: NameValuePayload = res.body.data.find((d: NameValuePayload) => d.name === "purchaseAmount")
+      const orderQuantity: NameValuePayload = res.body.data.find((d: NameValuePayload) => d.name === "orderQuantity")
+
+      expect(Number(purchaseAmount.value)).to.equal(150)
+      expect(Number(orderQuantity.value)).to.equal(5)
+    })
+  })
+
+  describe("when query params are invalid", () => {
+    xit("should return 400 upon an empty groupBy")
+    xit("should return 400 upon a non-string groupBy")
+    xit("should return 400 upon an invalid groupBy")
+    xit("should return 400 upon an invalid dateFrom")
+    xit("should return 400 upon an invalid dateTo")
   })
 })
