@@ -25,6 +25,12 @@ export interface GetMetricsParams {
   dateTo?: string
 }
 
+export interface GetMetricsResponse {
+  start_date: Date
+  name: string
+  average: number
+}
+
 export interface ClickhouseClientParams {
   host: string
   port: number
@@ -137,16 +143,37 @@ export default class DbDAO {
     await this.clickhouse.querying(query)
   }
 
-  async getMetrics(params: Partial<GetMetricsParams>): Promise<ClickhouseQueryResponse<NameValuePayload>> {
+  async getMetrics(params: Partial<GetMetricsParams>): Promise<ClickhouseQueryResponse<GetMetricsResponse>> {
     DbDAO.validateGetMetricsParams(params)
-    const query = `
+
+    let targetTable: string
+    switch (params.groupBy) {
+      case GroupByTimeOptions.MINUTE:
+        targetTable = "summarized_events_by_minute"
+        break
+      case GroupByTimeOptions.HOUR:
+        targetTable = "summarized_events_by_hour"
+        break
+      case GroupByTimeOptions.DAY:
+        targetTable = "summarized_events_by_day"
+        break
+      default:
+        throw new Error(`Unknown groupBy option: ${params.groupBy}`)
+    }
+
+    const query = knex
+      .raw(
+        `
       SELECT
+      start_date,
         name,
-        AVG(value) AS value
-      FROM events
-      GROUP BY name
+        average
+      FROM ??
       FORMAT JSON
-    `
+    `,
+        [targetTable]
+      )
+      .toString()
 
     return await this.clickhouse.querying(query)
   }

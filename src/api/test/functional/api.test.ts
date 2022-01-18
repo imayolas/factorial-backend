@@ -1,7 +1,7 @@
 import { expect } from "chai"
 import request from "supertest"
 import apiServer from "@api/apiServer"
-import DbDAO, { NameValuePayload } from "shared/DbDAO"
+import DbDAO, { GetMetricsResponse } from "shared/DbDAO"
 import { truncateAllTables } from "shared/testUtils"
 
 const dbName = process.env.CLICKHOUSE_DBNAME || "default"
@@ -48,11 +48,15 @@ describe("REST API, GET /data", () => {
     it("should return tracking metrics", async function () {
       const res = await getMetrics(this.context.query)
 
-      const purchaseAmount: NameValuePayload = res.body.data.find((d: NameValuePayload) => d.name === "purchaseAmount")
-      const orderQuantity: NameValuePayload = res.body.data.find((d: NameValuePayload) => d.name === "orderQuantity")
+      const purchaseAmount: GetMetricsResponse = res.body.data.find(
+        (d: GetMetricsResponse) => d.name === "purchaseAmount"
+      )
+      const orderQuantity: GetMetricsResponse = res.body.data.find(
+        (d: GetMetricsResponse) => d.name === "orderQuantity"
+      )
 
-      expect(Number(purchaseAmount.value)).to.equal(150)
-      expect(Number(orderQuantity.value)).to.equal(5)
+      expect(Number(purchaseAmount.average)).to.equal(150)
+      expect(Number(orderQuantity.average)).to.equal(5)
     })
   })
 
