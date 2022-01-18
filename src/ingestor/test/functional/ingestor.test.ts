@@ -91,12 +91,12 @@ describe("Data ingestor API, POST /track", () => {
       }
       const res = await postTrackEvent(payload)
       expect(res.statusCode).to.equal(400)
-      expect(res.body.errorMessage).to.equal("value should be a string, number or boolean")
+      expect(res.body.errorMessage).to.equal("value should be a number")
 
       payload.value = { key: [1, 2, 3] }
       const res2 = await postTrackEvent(payload)
       expect(res2.statusCode).to.equal(400)
-      expect(res2.body.errorMessage).to.equal("value should be a string, number or boolean")
+      expect(res2.body.errorMessage).to.equal("value should be a number")
     })
   })
 })
