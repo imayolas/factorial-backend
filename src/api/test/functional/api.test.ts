@@ -2,13 +2,14 @@ import { expect } from "chai"
 import request from "supertest"
 import apiServer from "@api/apiServer"
 import DbDAO, { NameValuePayload } from "shared/DbDAO"
+import { truncateAllTables } from "shared/testUtils"
 
-const dbName = process.env.CLICKHOUSE_DBNAME
+const dbName = process.env.CLICKHOUSE_DBNAME || "default"
 const dbDAO = new DbDAO({ queryOptions: { database: dbName } })
 
 const setClickhouseFixture = async () => {
-  await runClickhouseQuery("TRUNCATE TABLE IF EXISTS events")
-  await runClickhouseQuery(`
+  await truncateAllTables(dbName)
+  await dbDAO.raw(`
     INSERT INTO events (name, value)
     VALUES
       ('purchaseAmount', 100),
@@ -21,15 +22,13 @@ const getMetrics = async (query: { [key: string]: any }) => {
   return await request(apiServer).get("/metrics").query(query).set("Accept", "application/json")
 }
 
-const runClickhouseQuery = async (query: string) => {
-  const clickhouse = dbDAO.clickhouseClient
-  const res = await clickhouse.querying(query)
-  return res
-}
-
-describe.only("REST API, GET /data", () => {
+describe("REST API, GET /data", () => {
   beforeEach(async function () {
     await setClickhouseFixture()
+  })
+
+  after(async function () {
+    await truncateAllTables(dbName)
   })
 
   describe("when query params are valid", () => {
