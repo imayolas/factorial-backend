@@ -58,6 +58,12 @@ describe("REST API, GET /data", () => {
       expect(Number(purchaseAmount.average)).to.equal(150)
       expect(Number(orderQuantity.average)).to.equal(5)
     })
+
+    xit("when groupBy=day, should group by day")
+    xit("when groupBy=hour, should group by hour")
+    xit("when groupBy=minute, should group by minute")
+    xit("when dateFrom is set, should return only events after that date")
+    xit("when dateTo is set, should return only events before that date")
   })
 
   describe("when query params are invalid", () => {
