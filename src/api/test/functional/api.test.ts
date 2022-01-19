@@ -31,6 +31,13 @@ describe("REST API, GET /data", () => {
     await truncateAllTables(dbName)
   })
 
+  it("should return a valid CORS header", async () => {
+    const res = await getMetrics({
+      groupBy: "minute",
+    })
+    expect(res.header["access-control-allow-origin"]).to.equal("*")
+  })
+
   describe("when query params are valid", () => {
     beforeEach(async function () {
       this.context = {
