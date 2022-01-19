@@ -55,15 +55,10 @@ describe("REST API, GET /data", () => {
     it("should return tracking metrics", async function () {
       const res = await getMetrics(this.context.query)
 
-      const purchaseAmount: GetMetricsResponse = res.body.data.find(
-        (d: GetMetricsResponse) => d.name === "purchaseAmount"
-      )
-      const orderQuantity: GetMetricsResponse = res.body.data.find(
-        (d: GetMetricsResponse) => d.name === "orderQuantity"
-      )
-
-      expect(Number(purchaseAmount.average)).to.equal(150)
-      expect(Number(orderQuantity.average)).to.equal(5)
+      expect(res.body.purchaseAmount).to.be.an("array")
+      expect(Number(res.body.purchaseAmount[0][1])).to.equal(150)
+      expect(res.body.orderQuantity).to.be.an("array")
+      expect(Number(res.body.orderQuantity[0][1])).to.equal(5)
     })
 
     xit("when groupBy=day, should group by day")
