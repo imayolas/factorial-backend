@@ -148,10 +148,39 @@ describe("REST API, GET /data", () => {
   })
 
   describe("when query params are invalid", () => {
-    xit("should return 400 upon an empty groupBy")
-    xit("should return 400 upon a non-string groupBy")
-    xit("should return 400 upon an invalid groupBy")
-    xit("should return 400 upon an invalid dateFrom")
-    xit("should return 400 upon an invalid dateTo")
+    it("should return 400 upon an empty groupBy", async function () {
+      const res = await getMetrics({
+        groupBy: "",
+      })
+      expect(res.statusCode).to.equal(400)
+    })
+
+    it("should return 400 upon a non-string groupBy", async function () {
+      const res = await getMetrics({
+        groupBy: [1, 2, 3],
+      })
+      expect(res.statusCode).to.equal(400)
+    })
+
+    it("should return 400 upon an invalid groupBy option", async function () {
+      const res = await getMetrics({
+        groupBy: "tomato",
+      })
+      expect(res.statusCode).to.equal(400)
+    })
+
+    it("should return 400 upon an invalid dateFrom", async function () {
+      const res = await getMetrics({
+        dateFrom: "tomato",
+      })
+      expect(res.statusCode).to.equal(400)
+    })
+
+    it("should return 400 upon an invalid dateTo", async function () {
+      const res = await getMetrics({
+        dateTo: "tomato",
+      })
+      expect(res.statusCode).to.equal(400)
+    })
   })
 })
