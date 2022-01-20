@@ -5,7 +5,7 @@
   "license": "MIT",
   "devDependencies": {
     "@apla/clickhouse": "^1.6.4",
-    "@imayolas/clickhouse-migrate": "https://github.com/imayolas/clickhouse-migrate#1.1.1",
+    "@imayolas/clickhouse-migrate": "https://github.com/imayolas/clickhouse-migrate#1.2.1",
     "@types/bluebird": "^3.5.36",
     "@types/chai": "^4.3.0",
     "@types/cors": "^2.8.12",
@@ -37,7 +37,8 @@
     "test:watch": "nodemon --watch dist --exec \"yarn test\"",
     "prettier": "prettier --config .prettierrc '**/*.{js,ts,json}' --write",
     "prepare": "husky install",
-    "prepareClickhouse": "bash ./scripts/prepareClickhouse.sh"
+    "prepareClickhouse": "bash ./scripts/prepareClickhouse.sh",
+    "createSampleData": "CLICKHOUSE_DBNAME=warehouse node ./scripts/createSampleData"
   },
   "dependencies": {
     "bluebird": "^3.7.2",

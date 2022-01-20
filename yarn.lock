@@ -40,9 +40,9 @@
   dependencies:
     "@cspotcode/source-map-consumer" "0.8.0"
 
-"@imayolas/clickhouse-migrate@https://github.com/imayolas/clickhouse-migrate#1.1.1":
+"@imayolas/clickhouse-migrate@https://github.com/imayolas/clickhouse-migrate#1.2.1":
   version "1.1.0"
-  resolved "https://github.com/imayolas/clickhouse-migrate#c93755d8b8a6618053595ac30011b1f7c9483c65"
+  resolved "https://github.com/imayolas/clickhouse-migrate#a728468847b6ece3f53edb0074b75c761b17349b"
   dependencies:
     "@apla/clickhouse" "^1.6.0"
     bluebird "^3.5.5"
