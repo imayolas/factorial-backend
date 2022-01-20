@@ -1,8 +1,8 @@
 import { expect } from "chai"
 import request from "supertest"
 import ingestorServer from "@ingestor/ingestorServer"
-import DbDAO from "shared/DbDAO"
-import { truncateAllTables } from "shared/testUtils"
+import DbDAO from "common/DbDAO"
+import { truncateAllTables } from "common/testUtils"
 
 const dbName = process.env.CLICKHOUSE_DBNAME || "default"
 const dbDAO = new DbDAO({ queryOptions: { database: dbName } })

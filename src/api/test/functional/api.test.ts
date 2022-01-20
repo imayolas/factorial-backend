@@ -1,8 +1,8 @@
 import { expect } from "chai"
 import request from "supertest"
 import apiServer from "@api/apiServer"
-import DbDAO, { GetMetricsResponse } from "shared/DbDAO"
-import { truncateAllTables } from "shared/testUtils"
+import DbDAO, { GetMetricsResponse } from "common/DbDAO"
+import { truncateAllTables } from "common/testUtils"
 
 const dbName = process.env.CLICKHOUSE_DBNAME || "default"
 const dbDAO = new DbDAO({ queryOptions: { database: dbName } })

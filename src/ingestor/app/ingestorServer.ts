@@ -1,6 +1,6 @@
 import express from "express"
 import bodyParser from "body-parser"
-import DbDAO from "../../shared/DbDAO"
+import DbDAO from "../../common/DbDAO"
 
 const dbName = process.env.CLICKHOUSE_DBNAME
 const dbDAO = new DbDAO({ queryOptions: { database: dbName } })

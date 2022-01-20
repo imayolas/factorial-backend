@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import DbDAO from "../../../shared/DbDAO"
+import DbDAO from "../../../common/DbDAO"
 import _ from "underscore"
 
 const dbName = process.env.CLICKHOUSE_DBNAME
