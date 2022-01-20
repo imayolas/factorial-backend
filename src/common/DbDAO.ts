@@ -1,5 +1,5 @@
 import Knex from "knex"
-import { isDateString } from "./dateUtils"
+import { isDateString, dateToClickhouseDateString } from "./dateUtils"
 
 const Clickhouse = require("@apla/clickhouse")
 const Dialect = require("knex/lib/dialects/postgres/index.js")
@@ -145,33 +145,36 @@ export default class DbDAO {
 
   async getMetrics(params: Partial<GetMetricsParams>): Promise<ClickhouseQueryResponse<GetMetricsResponse>> {
     DbDAO.validateGetMetricsParams(params)
+    const { groupBy, dateFrom = new Date("2000-01-01"), dateTo = new Date() } = params
 
-    let targetTable: string
-    switch (params.groupBy) {
+    let targetClickhouseGroupFunc: string
+    switch (groupBy) {
       case GroupByTimeOptions.MINUTE:
-        targetTable = "summarized_events_by_minute"
+        targetClickhouseGroupFunc = "toStartOfMinute"
         break
       case GroupByTimeOptions.HOUR:
-        targetTable = "summarized_events_by_hour"
+        targetClickhouseGroupFunc = "toStartOfHour"
         break
       case GroupByTimeOptions.DAY:
-        targetTable = "summarized_events_by_day"
+        targetClickhouseGroupFunc = "toStartOfDay"
         break
       default:
-        throw new Error(`Unknown groupBy option: ${params.groupBy}`)
+        throw new Error(`Unknown groupBy option: ${groupBy}`)
     }
 
     const query = knex
       .raw(
         `
-      SELECT
-      start_date,
-        name,
-        average
-      FROM ??
+      SELECT name,
+        ${targetClickhouseGroupFunc}(created_at) as start_date,
+        avg(value) as average
+      FROM events
+      WHERE created_at >= ?
+      AND created_at <= ?
+      GROUP BY name, start_date
       FORMAT JSON
     `,
-        [targetTable]
+        [dateToClickhouseDateString(dateFrom), dateToClickhouseDateString(dateTo)]
       )
       .toString()
 

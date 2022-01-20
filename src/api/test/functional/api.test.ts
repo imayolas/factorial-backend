@@ -38,7 +38,7 @@ describe("REST API, GET /data", () => {
     expect(res.header["access-control-allow-origin"]).to.equal("*")
   })
 
-  describe.only("when query params are valid", () => {
+  describe("when query params are valid", () => {
     beforeEach(async function () {
       this.context = {
         query: {
@@ -107,37 +107,43 @@ describe("REST API, GET /data", () => {
       expect(purchaseAmountTargetRow[1]).to.equal(450)
     })
 
-    xit("when dateFrom is set, should return only events after that date", async function () {
+    it("when dateFrom is set, should return only events after that date", async function () {
       await dbDAO.raw(`
         INSERT INTO events (name, value, created_at)
         VALUES
         ('purchaseAmount', 300, '2022-01-01 00:00:00'),
         ('purchaseAmount', 600, '2022-01-01 00:00:02'),
-        ('purchaseAmount', 500, '2022-01-01 13:15:00'),
+        ('purchaseAmount', 500, '2022-01-12 13:15:00'),
       `)
 
       const res = await getMetrics({ groupBy: "day", dateFrom: new Date("2022-01-12") })
       const { purchaseAmount } = res.body
-      console.log(purchaseAmount)
 
-      const purchaseAmountTargetRow = purchaseAmount.find((row: [string, number]) => row[0] === "2022-01-01 00:00:00")
-      expect(purchaseAmountTargetRow[1]).to.equal(450)
+      const targetRowNull = purchaseAmount.find((row: [string, number]) => row[0] === "2022-01-01 00:00:00")
+      const targetRowExists = purchaseAmount.find((row: [string, number]) => row[0] === "2022-01-12 00:00:00")
+
+      expect(targetRowNull).to.be.undefined
+      expect(targetRowExists[1]).to.equal(500)
     })
 
-    xit("when dateTo is set, should return only events before that date", async function () {
+    it("when dateTo is set, should return only events before that date", async function () {
       await dbDAO.raw(`
         INSERT INTO events (name, value, created_at)
         VALUES
         ('purchaseAmount', 300, '2022-01-01 00:00:00'),
         ('purchaseAmount', 600, '2022-01-01 00:00:02'),
-        ('purchaseAmount', 500, '2022-01-01 13:15:00'),
+        ('purchaseAmount', 500, '2022-01-12 13:15:00'),
       `)
 
-      const res = await getMetrics({ groupBy: "minute" })
+      const res = await getMetrics({ groupBy: "day", dateTo: new Date("2022-01-02 00:00:00") })
+
       const { purchaseAmount } = res.body
 
-      const purchaseAmountTargetRow = purchaseAmount.find((row: [string, number]) => row[0] === "2022-01-01 00:00:00")
-      expect(purchaseAmountTargetRow[1]).to.equal(450)
+      const targetRowNull = purchaseAmount.find((row: [string, number]) => row[0] === "2022-01-12 00:00:00")
+      const targetRowExists = purchaseAmount.find((row: [string, number]) => row[0] === "2022-01-01 00:00:00")
+
+      expect(targetRowNull).to.be.undefined
+      expect(targetRowExists[1]).to.equal(450)
     })
   })
 
