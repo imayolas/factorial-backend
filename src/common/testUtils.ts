@@ -1,4 +1,4 @@
-import DbDAO, { ClickhouseQueryResponse } from "common/DbDAO"
+import DbDAO from "common/DbDAO"
 import _ from "underscore"
 import Promise from "bluebird"
 

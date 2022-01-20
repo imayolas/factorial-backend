@@ -1,7 +1,7 @@
 import { expect } from "chai"
 import request from "supertest"
 import apiServer from "@api/apiServer"
-import DbDAO, { GetMetricsResponse } from "common/DbDAO"
+import DbDAO from "common/DbDAO"
 import { truncateAllTables } from "common/testUtils"
 
 const dbName = process.env.CLICKHOUSE_DBNAME || "default"
