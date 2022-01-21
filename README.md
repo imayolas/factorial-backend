@@ -42,3 +42,4 @@ You're now good to go! Keep reading to see how to start the dev environment
 - Move API endpoint validations as part of the request lifecycle
 - Unit test key libraries (ie: DbDAO)
 - Fix relative paths in code (a weird bug is preventing them from working correctly)
+- Put together shared type declarations
