@@ -21,3 +21,8 @@ export const getMetrics = async (req: Request, res: Response) => {
     throw error
   }
 }
+
+export const getDimensions = async (req: Request, res: Response) => {
+  const dbResult = await dbDAO.getDimensions()
+  return res.json(dbResult.data.map((row) => row.name))
+}

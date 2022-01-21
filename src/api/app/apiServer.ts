@@ -1,6 +1,6 @@
 import express from "express"
 import bodyParser from "body-parser"
-import { getMetrics } from "./controllers/metricsCtrl"
+import { getDimensions, getMetrics } from "./controllers/metricsCtrl"
 import cors from "cors"
 
 const app = express()
@@ -14,6 +14,7 @@ app.use((error: Error, req: any, res: any, next: any) => {
   res.status(500).send("Internal server error")
 })
 
+app.get("/dimensions", getDimensions)
 app.get("/metrics", getMetrics)
 
 // Export to be used to enable port listening + for testing purposes

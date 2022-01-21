@@ -6,6 +6,7 @@ import {
   GetMetricsResponse,
   GetMetricsParams,
   NameValuePayload,
+  GetDimensionsResponse,
 } from "."
 
 const Clickhouse = require("@apla/clickhouse")
@@ -141,6 +142,16 @@ export default class DbDAO {
         [dateToClickhouseDateString(dateFrom), dateToClickhouseDateString(dateTo)]
       )
       .toString()
+
+    return await this.clickhouse.querying(query)
+  }
+
+  async getDimensions(): Promise<ClickhouseQueryResponse<GetDimensionsResponse>> {
+    const query = `
+      SELECT distinct name as name
+      FROM events
+      FORMAT JSON
+    `
 
     return await this.clickhouse.querying(query)
   }

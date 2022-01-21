@@ -15,6 +15,10 @@ export interface GetMetricsResponse {
   average: number
 }
 
+export interface GetDimensionsResponse {
+  name: string
+}
+
 export interface ClickhouseClientParams {
   host: string
   port: number
