@@ -1,7 +1,6 @@
 import apiServer from "./apiServer"
+import { API_PORT } from "../../config/AppConstants"
 
-const port: string = process.env.API_PORT || "4001"
-
-apiServer.listen(port, () => {
-  console.log(`Server started on port ${port}`)
+apiServer.listen(API_PORT, () => {
+  console.log(`Server started on port ${API_PORT}`)
 })

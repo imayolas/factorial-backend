@@ -1,14 +1,14 @@
 import { expect } from "chai"
 import request from "supertest"
 import apiServer from "@api/apiServer"
-import DbDAO from "common/DbDAO"
-import { truncateAllTables } from "common/testUtils"
+import DbDAO from "@common/DbDAO"
+import { truncateAllTables } from "@common/testUtils"
+import { CLICKHOUSE_DBNAME } from "../../../config/AppConstants"
 
-const dbName = process.env.CLICKHOUSE_DBNAME || "default"
-const dbDAO = new DbDAO({ queryOptions: { database: dbName } })
+const dbDAO = new DbDAO({ queryOptions: { database: CLICKHOUSE_DBNAME } })
 
 const setClickhouseFixture = async () => {
-  await truncateAllTables(dbName)
+  await truncateAllTables(CLICKHOUSE_DBNAME)
   await dbDAO.raw(`
     INSERT INTO events (name, value)
     VALUES
@@ -28,7 +28,7 @@ describe("REST API, GET /data", () => {
   })
 
   after(async function () {
-    await truncateAllTables(dbName)
+    await truncateAllTables(CLICKHOUSE_DBNAME)
   })
 
   it("should return a valid CORS header", async () => {

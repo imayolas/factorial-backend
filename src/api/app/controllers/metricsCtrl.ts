@@ -1,21 +1,16 @@
 import { Request, Response } from "express"
 import DbDAO from "../../../common/DbDAO"
 import _ from "underscore"
+import { CLICKHOUSE_DBNAME } from "../../../config/AppConstants"
 
-const dbName = process.env.CLICKHOUSE_DBNAME
-
-const dbDAO = new DbDAO({ queryOptions: { database: dbName } })
+const dbDAO = new DbDAO({ queryOptions: { database: CLICKHOUSE_DBNAME } })
 
 export const getMetrics = async (req: Request, res: Response) => {
   try {
     const dbResult = await dbDAO.getMetrics(req.query)
     let dataGroupedByMetric: { [key: string]: Array<[Date, number]> } = {}
     dbResult.data.forEach((row) => {
-      if (!dataGroupedByMetric[row.name]) {
-        dataGroupedByMetric[row.name] = [[row.start_date, row.average]]
-      } else {
-        dataGroupedByMetric[row.name].push([row.start_date, row.average])
-      }
+      dataGroupedByMetric[row.name] = [...(dataGroupedByMetric[row.name] || []), [row.start_date, row.average]]
     })
 
     return res.status(200).json(dataGroupedByMetric)

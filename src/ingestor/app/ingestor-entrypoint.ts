@@ -1,7 +1,6 @@
 import ingestorServer from "./ingestorServer"
+import { INGESTOR_PORT } from "../../config/AppConstants"
 
-const port: string = process.env.INGESTOR_PORT || "4000"
-
-ingestorServer.listen(port, () => {
-  console.log(`Server started on port ${port}`)
+ingestorServer.listen(INGESTOR_PORT, () => {
+  console.log(`Server started on port ${INGESTOR_PORT}`)
 })

@@ -35,3 +35,10 @@ You're now good to go! Keep reading to see how to start the dev environment
 2. Run the test suite in watch mode: `yarn test:watch`
 3. Run the APIs in watch mode: `yarn dev`
 4. Write amazing code!
+
+## Next steps
+
+- Bundle Typescript for production & create production launch commands
+- Move API endpoint validations as part of the request lifecycle
+- Unit test key libraries (ie: DbDAO)
+- Fix relative paths in code (a weird bug is preventing them from working correctly)

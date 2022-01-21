@@ -29,12 +29,10 @@ const run = async () => {
       const rand = Math.random()
       startTemperature[0] =
         startTemperature[1] === "up" ? startTemperature[0] + rand / 2 : startTemperature[0] - rand / 2
-      if (startTemperature[0] < 3) {
-        startTemperature[1] = "up"
-      }
-      if (startTemperature[0] > 33) {
-        startTemperature[1] = "down"
-      }
+
+      startTemperature[0] < 3 && (startTemperature[1] = "up")
+      startTemperature[0] > 33 && (startTemperature[1] = "down")
+
       const stochasticReportedTemperature =
         startTemperature[0] + (Math.random() > 0.5 ? Math.random() * 4 : -Math.random() * 4)
 
@@ -49,7 +47,7 @@ const run = async () => {
         startHumidity[0] + (Math.random() > 0.5 ? Math.random() * 0.05 : -Math.random() * 0.05)
 
       const wattsConsumed = Math.floor(Math.random() * 1000) + 1000
-      // const dateWithoutMilliseconds = new Date(datePoint.getTime() - datePoint.getMilliseconds())
+
       return [
         {
           created_at: datePoint.toISOString().substring(0, 19).replace("T", " "),

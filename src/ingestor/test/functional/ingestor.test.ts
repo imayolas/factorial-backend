@@ -3,9 +3,9 @@ import request from "supertest"
 import ingestorServer from "@ingestor/ingestorServer"
 import DbDAO from "common/DbDAO"
 import { truncateAllTables } from "common/testUtils"
+import { CLICKHOUSE_DBNAME } from "../../../config/AppConstants"
 
-const dbName = process.env.CLICKHOUSE_DBNAME || "default"
-const dbDAO = new DbDAO({ queryOptions: { database: dbName } })
+const dbDAO = new DbDAO({ queryOptions: { database: CLICKHOUSE_DBNAME } })
 
 const sendTrackEvent = async (payload: any) => {
   return await request(ingestorServer).post("/track").set("Accept", "application/json").send(payload)
@@ -14,7 +14,7 @@ const sendTrackEvent = async (payload: any) => {
 describe("Data ingestor API, POST /track", () => {
   describe("when payload is valid", () => {
     beforeEach(async function () {
-      await truncateAllTables(dbName)
+      await truncateAllTables(CLICKHOUSE_DBNAME)
       this.context = {
         payload: {
           name: "purchaseAmount",
@@ -25,7 +25,7 @@ describe("Data ingestor API, POST /track", () => {
     })
 
     after(async function () {
-      await truncateAllTables(dbName)
+      await truncateAllTables(CLICKHOUSE_DBNAME)
     })
 
     it("should return 201 created", async function () {

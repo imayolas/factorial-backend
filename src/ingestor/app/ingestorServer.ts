@@ -1,9 +1,9 @@
 import express from "express"
 import bodyParser from "body-parser"
 import DbDAO from "../../common/DbDAO"
+import { CLICKHOUSE_DBNAME } from "../../config/AppConstants"
 
-const dbName = process.env.CLICKHOUSE_DBNAME
-const dbDAO = new DbDAO({ queryOptions: { database: dbName } })
+const dbDAO = new DbDAO({ queryOptions: { database: CLICKHOUSE_DBNAME } })
 
 const app = express()
 
