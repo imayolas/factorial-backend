@@ -25,7 +25,7 @@ To get the environment up and running, do the following:
 2. Install dependencies. Run `yarn`
 3. Lift up docker compose; this will set up a Clickhouse instance: `docker-compose up -d`
 4. Run a script to create and migrate the Clickhouse dbs for test and dev: `yarn prepareClickhouse`
-5. Run a script to add dummy data to the db: `yarn prepareClickhouse`
+5. Run a script to add dummy data to the db: `yarn createSampleData`
 
 You're now good to go! Keep reading to see how to start the dev environment
 
