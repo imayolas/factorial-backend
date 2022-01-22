@@ -32,8 +32,8 @@ You're now good to go! Keep reading to see how to start the dev environment
 ## Starting up the dev environment
 
 1. Lift up the DB if you haven't `docker-compose up -d`
-2. Run the test suite in watch mode: `yarn test:watch`
-3. Run the APIs in watch mode: `yarn dev`
+2. Run the APIs in watch mode: `yarn dev`
+3. Run the test suite in watch mode: `yarn test:watch` (Currently tests expect `yarn dev` to be running)
 4. Write amazing code!
 
 ## Next steps
