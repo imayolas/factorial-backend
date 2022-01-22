@@ -8,10 +8,10 @@
 
 - Two entrypoints, one for the data ingestor and another for the REST API, so that they can be deployed and scaled independently
 - Clickhouse (a columnar data store) as a persistance layer due to its excellent performance at:
-  - Its capacity to ingest large amounts of data in real-time, with low overhead.
-  - Fast aggregational lookups
+  - Ingesting large amounts of real-time data, with low overhead
+  - Fast aggregational lookups, ideal for real-time analytics
   - Transformation and persistance at insertion-time of averages per min/hour/day
-- Integration testing to ensure that API acts and responds as expected
+- Integration testing (as opposed to unit), to ensure that API acts and responds as expected
 
 ## Setting the dev environment
 
